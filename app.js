@@ -8,6 +8,8 @@ const flash = require('connect-flash')
 
 const session = require('express-session')
 
+const passport = require('./config/passport')
+
 const routes = require('./routes')
 
 const port = 3000
@@ -21,6 +23,10 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session({ secret, resave: false, saveUninitialized: false }))
+
+app.use(passport.initialize())
+
+app.use(passport.session())
 
 app.use(flash())
 
