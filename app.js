@@ -24,6 +24,8 @@ const port = 3000
 
 const secret = 'secret'
 
+require('dotenv').config()
+
 app.engine('hbs', engine({ extname: '.hbs', helpers: handlebarsHelpers }))
 
 app.set('view engine', 'hbs')
