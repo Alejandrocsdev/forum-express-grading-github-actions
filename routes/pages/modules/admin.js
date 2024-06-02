@@ -1,11 +1,11 @@
 const { Router } = require('express')
 const router = Router()
 
-const adminController = require('../../controllers/admin-controller')
+const adminController = require('../../../controllers/pages/admin-controller')
 
-const categoryController = require('../../controllers/category-controller')
+const categoryController = require('../../../controllers/pages/category-controller')
 
-const upload = require('../../middleware/multer')
+const upload = require('../../../middleware/multer')
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)

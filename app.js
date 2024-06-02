@@ -18,7 +18,7 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 const { getUser } = require('./helpers/auth-helpers')
 
-const routes = require('./routes')
+const { pages, apis } = require('./routes')
 
 const port = 3000
 
@@ -49,7 +49,8 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use(routes)
+app.use('/api', apis)
+app.use(pages)
 
 app.listen(port, () => console.info(`http://localhost:${port}`))
 
