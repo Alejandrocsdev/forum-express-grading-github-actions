@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { localFileHandler } = require('../helpers/file-helpers')
-const { User, Restaurant, Favorite } = require('../models')
+const { User, Restaurant, Favorite, Like } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -114,6 +114,46 @@ const userController = {
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have like this restaurant!')
+
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '已按下喜歡')
+        res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.destroy({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(() => {
+        req.flash('success_messages', '刪除like成功')
+        res.redirect('back')
+      })
       .catch(err => next(err))
   }
 }
