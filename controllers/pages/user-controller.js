@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { localFileHandler } = require('../../helpers/file-helpers')
-const { User, Restaurant, Favorite, Like, Followship } = require('../../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -41,10 +41,28 @@ const userController = {
     })
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      include: [
+        {
+          model: Comment,
+          include: [
+            {
+              model: Restaurant,
+              attributes: ['image', 'name']
+            }
+          ]
+        }
+      ]
+    })
       .then(user => {
-        if (!user) throw new Error("User didn't exists!")
-        return res.render('users/profile', { user: user.toJSON() })
+        if (!user) throw new Error("User didn't exist.")
+
+        const commentData = user.Comments ? user.Comments : []
+
+        res.render('users/profile', {
+          user: user.toJSON(),
+          commentData
+        })
       })
       .catch(err => next(err))
   },
@@ -61,10 +79,7 @@ const userController = {
     const { file } = req
     if (req.user.id !== Number(req.params.id)) throw new Error('只能更改自己的資料！')
     if (!name.trim()) throw new Error('User name is required!')
-    return Promise.all([
-      User.findByPk(req.params.id),
-      localFileHandler(file)
-    ])
+    return Promise.all([User.findByPk(req.params.id), localFileHandler(file)])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
         return user.update({
