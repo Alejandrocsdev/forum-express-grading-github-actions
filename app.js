@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const path = require('path')
 
 const express = require('express')
@@ -23,8 +25,6 @@ const { pages, apis } = require('./routes')
 const port = 3000
 
 const secret = 'secret'
-
-require('dotenv').config()
 
 app.engine('hbs', engine({ extname: '.hbs', helpers: handlebarsHelpers }))
 
