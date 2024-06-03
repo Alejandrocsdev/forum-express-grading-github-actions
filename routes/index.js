@@ -1,6 +1,8 @@
 const { Router } = require('express')
 const router = Router()
 
+const upload = require('../middleware/multer')
+
 const passport = require('../config/passport')
 
 const restController = require('../controllers/restaurant-controller')
@@ -23,7 +25,9 @@ router.post(
 )
 router.get('/logout', userController.logout)
 
+router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
