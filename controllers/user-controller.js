@@ -38,6 +38,14 @@ const userController = {
       req.flash('success_messages', '登出成功！')
       res.redirect('/signin')
     })
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exists!")
+        return res.render('users/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController

@@ -23,6 +23,8 @@ router.post(
 )
 router.get('/logout', userController.logout)
 
+router.get('/users/:id', authenticated, userController.getUser)
+
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
